@@ -1,1 +1,1 @@
-# Lucas Ahumada - Electrónica IV - Laboratorio2
+# Lucas Ahumada Checa Casquero - Electrónica IV - Laboratorio2

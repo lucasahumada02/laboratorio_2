@@ -1,5 +1,5 @@
 /********************************************************************************************************************
-Copyright (c) 2025, Lucas Ahumada Checa Casquero<lucasahum@gmail.com>
+Copyright (c) 2025, Lucas Ahumada Checa Casquero <lucasahum@gmail.com>
 
 Permission is hereby granted, free of charge, to any person obtaining a copy of this software and associated
 documentation files (the "Software"), to deal in the Software without restriction, including without limitation the
@@ -17,14 +17,15 @@ OTHERWISE, ARISING FROM, OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR
 SPDX-License-Identifier: MIT
 *********************************************************************************************************************/
 
-/** @file main.c
- ** @brief Programa principal: serializa y muestra los datos del alumno en formato JSON
+/** @file alumno.c
+ ** @brief Implementación del módulo Alumno
  **/
 
 /* === Headers files inclusions ==================================================================================== */
 
-#include <stdio.h>
 #include "alumno.h"
+#include <stdio.h>
+#include <string.h>
 
 /* === Macros definitions ========================================================================================== */
 
@@ -32,36 +33,58 @@ SPDX-License-Identifier: MIT
 
 /* === Private function declarations =============================================================================== */
 
+/**
+ * @brief Serializa un campo de texto clave-valor en formato JSON.
+ * 
+ * @param clave Nombre del campo
+ * @param valor Contenido de texto
+ * @param salida Buffer de salida
+ * @return int Longitud del texto generado
+ */
+static int SerializarTexto(const char *clave, const char *valor, char *salida);
+
+/**
+ * @brief Serializa un campo numérico clave-valor en formato JSON.
+ * 
+ * @param clave Nombre del campo
+ * @param valor Valor numérico
+ * @param salida Buffer de salida
+ * @return int Longitud del texto generado
+ */
+static int SerializarNumero(const char *clave, int valor, char *salida);
+
 /* === Private variable definitions ================================================================================ */
 
 /* === Public variable definitions ================================================================================= */
 
 /* === Private function definitions ================================================================================ */
 
+static int SerializarTexto(const char *clave, const char *valor, char *salida) {
+    return sprintf(salida, "\"%s\":\"%s\"", clave, valor);
+}
+
+static int SerializarNumero(const char *clave, int valor, char *salida) {
+    return sprintf(salida, "\"%s\":%d", clave, valor);
+}
+
 /* === Public function implementation ============================================================================== */
 
-/**
- * @brief Función principal del programa.
- * 
- * @return int Código de salida del sistema operativo
- */
-int main(void) {
-    Alumno alumno = {
-        .nombre = "Lucas",
-        .apellido = "Ahumada",
-        .documento = 12345678
-    };
+int Serializar(const Alumno *a, char *salida, int tam) {
+    char buffer[256];
+    int total = 0;
 
-    char salida[256];
-    int resultado = Serializar(&alumno, salida, sizeof(salida));
+    total += sprintf(buffer + total, "{");
+    total += SerializarTexto("nombre", a->nombre, buffer + total);
+    total += sprintf(buffer + total, ",");
+    total += SerializarTexto("apellido", a->apellido, buffer + total);
+    total += sprintf(buffer + total, ",");
+    total += SerializarNumero("documento", a->documento, buffer + total);
+    total += sprintf(buffer + total, "}");
 
-    if (resultado >= 0) {
-        printf("%s\n", salida);
-    } else {
-        printf("Error: espacio insuficiente para serializar\n");
-    }
+    if (total >= tam) return -1;
 
-    return 0;
+    strcpy(salida, buffer);
+    return total;
 }
 
 /* === End of documentation ======================================================================================== */
