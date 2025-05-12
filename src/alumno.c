@@ -41,7 +41,7 @@ SPDX-License-Identifier: MIT
  * @param salida Buffer de salida
  * @return int Longitud del texto generado
  */
-static int SerializarTexto(const char *clave, const char *valor, char *salida);
+static int SerializarTexto(const char clave[], const char valor[], char salida[]);
 
 /**
  * @brief Serializa un campo numérico clave-valor en formato JSON.
@@ -51,7 +51,7 @@ static int SerializarTexto(const char *clave, const char *valor, char *salida);
  * @param salida Buffer de salida
  * @return int Longitud del texto generado
  */
-static int SerializarNumero(const char *clave, int valor, char *salida);
+static int SerializarNumero(const char clave[], uint32_t valor, char salida[]);
 
 /* === Private variable definitions ================================================================================ */
 
@@ -59,19 +59,19 @@ static int SerializarNumero(const char *clave, int valor, char *salida);
 
 /* === Private function definitions ================================================================================ */
 
-static int SerializarTexto(const char *clave, const char *valor, char *salida) {
+static int SerializarTexto(const char clave[], const char valor[], char salida[]) {
     return sprintf(salida, "\"%s\":\"%s\"", clave, valor);
 }
 
-static int SerializarNumero(const char *clave, int valor, char *salida) {
+static int SerializarNumero(const char clave[], uint32_t valor, char salida[]) {
     return sprintf(salida, "\"%s\":%d", clave, valor);
 }
 
 /* === Public function implementation ============================================================================== */
 
-int Serializar(const Alumno *a, char *salida, int tam) {
+int Serializar(const alumno_t *a, char salida[], uint32_t size) {
     char buffer[256];
-    int total = 0;
+    uint32_t  total = 0;
 
     total += sprintf(buffer + total, "{");
     total += SerializarTexto("nombre", a->nombre, buffer + total);
@@ -81,7 +81,7 @@ int Serializar(const Alumno *a, char *salida, int tam) {
     total += SerializarNumero("documento", a->documento, buffer + total);
     total += sprintf(buffer + total, "}");
 
-    if (total >= tam) return -1;
+    if (total >= size) return -1;
 
     strcpy(salida, buffer);
     return total;

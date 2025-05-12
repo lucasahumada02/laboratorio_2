@@ -26,6 +26,8 @@ SPDX-License-Identifier: MIT
 
 /* === Headers files inclusions ==================================================================================== */
 
+#include <stdint.h>
+
 /* === Header for C++ compatibility ================================================================================ */
 #ifdef __cplusplus
 extern "C" {
@@ -38,11 +40,12 @@ extern "C" {
 /**
  * @brief Estructura que representa a un alumno.
  */
-typedef struct {
-    char nombre[50];     /**< Nombre del alumno */
-    char apellido[50];   /**< Apellido del alumno */
-    int documento;       /**< Documento del alumno */
-} Alumno;
+
+ typedef struct alumno_s {
+    char nombre[20];    /**< Nombre del alumno*/
+    char apellido[20];  /**< Apellido del alumno*/
+    uint32_t documento; /**< Documento del alumno*/
+} alumno_t;
 
 /* === Public variable declarations ================================================================================ */
 
@@ -53,10 +56,11 @@ typedef struct {
  * 
  * @param a Puntero constante al alumno
  * @param salida Buffer donde se escribe el JSON generado
- * @param tam Tamaño máximo del buffer de salida
+ * @param size Tamaño máximo del buffer de salida
  * @return int Longitud de la cadena generada o -1 si no hay suficiente espacio
  */
-int Serializar(const Alumno *a, char *salida, int tam);
+int Serializar(const alumno_t *a, char salida[], uint32_t size);
+
 
 /* === End of conditional blocks =================================================================================== */
 #ifdef __cplusplus

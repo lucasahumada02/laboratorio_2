@@ -24,6 +24,7 @@ SPDX-License-Identifier: MIT
 /* === Headers files inclusions ==================================================================================== */
 
 #include <stdio.h>
+
 #include "alumno.h"
 
 /* === Macros definitions ========================================================================================== */
@@ -42,15 +43,14 @@ SPDX-License-Identifier: MIT
 
 /**
  * @brief Función principal del programa.
- * 
+ *
  * @return int Código de salida del sistema operativo
  */
 int main(void) {
-    Alumno alumno = {
+    alumno_t alumno = {
         .nombre = "Lucas",
         .apellido = "Ahumada",
-        .documento = 12345678
-    };
+        .documento = 43770990};
 
     char salida[256];
     int resultado = Serializar(&alumno, salida, sizeof(salida));
