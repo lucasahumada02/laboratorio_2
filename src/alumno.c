@@ -123,7 +123,7 @@ alumno_t CrearAlumno(char* nombre, char* apellido, uint32_t dni) {
     return self;
 }
 
-int SerializarAlumno(alumno_t self, char buffer[], int size) {
+int SerializarAlumno(alumno_t self, char *buffer, int size) {
     int escritos;
     int resultado;
 
