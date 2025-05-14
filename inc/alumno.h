@@ -67,7 +67,7 @@ alumno_t CrearAlumno(char * nombre, char * apellido, uint32_t dni);
  * @param size Espacio disponible en la cadena de caracteres
  * @return int Cantidad de caracteres escritos en la cadena de resultado o -1 si hubo error
  */
-int SerializarAlumno(alumno_t alumno, char buffer[], uint32_t size);
+int SerializarAlumno(alumno_t self, char *buffer, uint32_t size);
 
 /* === End of conditional blocks =================================================================================== */
 #ifdef __cplusplus

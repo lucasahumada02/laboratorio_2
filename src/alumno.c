@@ -28,6 +28,7 @@ SPDX-License-Identifier: MIT
 #include <stdio.h>
 #include <string.h>
 #include <stdbool.h>
+#include <stdlib.h>
 /* === Macros definitions ========================================================================================== */
 #ifdef USAR_MEMORIA_ESTATICA
     #ifndef ALUMNOS_MAX_INSTANCIAS
@@ -110,7 +111,7 @@ static int SerializarNumero(char campo[], int valor, char buffer[], uint32_t siz
 
 /* === Public function implementation ============================================================================== */
 alumno_t CrearAlumno(char* nombre, char* apellido, uint32_t dni) {
-    #ifndef USAR_MEMORIA_DINAMICA
+    #ifdef USAR_MEMORIA_DINAMICA
         alumno_t self = malloc(sizeof(struct alumno_s));
     #else
         alumno_t self = CrearInstancia();
@@ -123,7 +124,7 @@ alumno_t CrearAlumno(char* nombre, char* apellido, uint32_t dni) {
     return self;
 }
 
-int SerializarAlumno(alumno_t self, char *buffer, int size) {
+int SerializarAlumno(alumno_t self, char *buffer, uint32_t size) {
     int escritos;
     int resultado;
 
@@ -154,7 +155,7 @@ int SerializarAlumno(alumno_t self, char *buffer, int size) {
 
     buffer = buffer + (escritos - resultado);
 
-    if (escritos >= (size - 1)) {
+    if (escritos >= (int)(size - 1)) {
         return -1;
     } else {
         *buffer = '}';

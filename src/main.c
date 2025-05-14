@@ -55,7 +55,7 @@ int main(void) {
 
     alumno_t matias = CrearAlumno("Matias","Gonzalez",45657589);
 
-    resultado = Serializar(lucas,buffer, sizeof(buffer));
+    resultado = SerializarAlumno(lucas,buffer, sizeof(buffer));
 
     if (resultado >= 0) {
         printf("Serializado: %s\n", buffer);
@@ -63,7 +63,7 @@ int main(void) {
         printf("Error: espacio insuficiente para serializar\n");
     }
 
-    resultado = Serializar(matias,buffer, sizeof(buffer));
+    resultado = SerializarAlumno(matias,buffer, sizeof(buffer));
      if (resultado >= 0) {
         printf("Serializado: %s\n", buffer);
     } else {
