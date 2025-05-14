@@ -39,25 +39,35 @@ extern "C" {
 
 //! Estructura que representa un alumno
 
-typedef struct alumno_s {
+typedef struct alumno_s * alumno_t;
+
+/*typedef struct alumno_s {
     char nombre[20];     //!< Nombre del alumno
     char apellido[20];   //!< Apellido del alumno
     uint32_t documento;  //!< Documento del alumno
-} alumno_t;
+} alumno_t;*/
 
 /* === Public variable declarations ================================================================================ */
 
 /* === Public function declarations ================================================================================ */
-
+/**
+ * @brief Funcion para crear un nuevo alumno
+ * 
+ * @param nombre Nombre del alumno
+ * @param apellido Apellido del alumno
+ * @param dni Documento del alumno
+ * @return alumno_t Referencia al  nuevo alumno creado
+ */
+alumno_t CrearAlumno(char * nombre, char * apellido, uint32_t dni);
 /**
  * @brief Funcion para serializar los datos de un alumno
  *
- * @param alumno Puntero a la estructura con los datos del alumno
+ * @param alumno Referencia al alumno a serializar
  * @param buffer cadena de caracteres donde se almacenaran los datos serializados
  * @param size Espacio disponible en la cadena de caracteres
  * @return int Cantidad de caracteres escritos en la cadena de resultado o -1 si hubo error
  */
-int Serializar(const alumno_t* alumno, char buffer[], uint32_t size);
+int SerializarAlumno(alumno_t alumno, char buffer[], uint32_t size);
 
 /* === End of conditional blocks =================================================================================== */
 #ifdef __cplusplus

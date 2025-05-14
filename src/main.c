@@ -34,11 +34,7 @@ SPDX-License-Identifier: MIT
 /* === Private function declarations =============================================================================== */
 
 /* === Private variable definitions ================================================================================ */
-static const struct alumno_s YO = {
-    .nombre = "Lucas",
-    .apellido = "Ahumada",
-    .documento = 43770990
-};
+
 /* === Public variable definitions ================================================================================= */
 
 /* === Private function definitions ================================================================================ */
@@ -55,7 +51,11 @@ int main(void) {
     char buffer[100];
     int resultado;
 
-    resultado = Serializar(&YO,buffer, sizeof(buffer));
+    alumno_t lucas = CrearAlumno("Lucas","Ahumada",43770990);
+
+    alumno_t matias = CrearAlumno("Matias","Gonzalez",45657589);
+
+    resultado = Serializar(lucas,buffer, sizeof(buffer));
 
     if (resultado >= 0) {
         printf("Serializado: %s\n", buffer);
@@ -63,6 +63,12 @@ int main(void) {
         printf("Error: espacio insuficiente para serializar\n");
     }
 
+    resultado = Serializar(matias,buffer, sizeof(buffer));
+     if (resultado >= 0) {
+        printf("Serializado: %s\n", buffer);
+    } else {
+        printf("Error: espacio insuficiente para serializar\n");
+    }
     return 0;
 }
 

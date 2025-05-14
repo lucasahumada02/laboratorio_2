@@ -24,16 +24,35 @@ SPDX-License-Identifier: MIT
 /* === Headers files inclusions ==================================================================================== */
 
 #include "alumno.h"
-
+#include "config.h"
 #include <stdio.h>
 #include <string.h>
-
+#include <stdbool.h>
 /* === Macros definitions ========================================================================================== */
-
+#ifdef USAR_MEMORIA_ESTATICA
+    #ifndef ALUMNOS_MAX_INSTANCIAS
+        #define ALUMNOS_MAX_INSTANCIAS 2 //!<Cantidad maxima de alumnos
+    #endif
+#endif
 /* === Private data type declarations ============================================================================== */
-
+struct alumno_s {
+    char nombre[20];     //!< Nombre del alumno
+    char apellido[20];   //!< Apellido del alumno
+    uint32_t documento;  //!< Documento del alumno
+#ifndef USAR_MEMORIA_ESTATICA
+    bool ocupado;       //!<Indica si la instancia esta ocupada
+#endif
+};
 /* === Private function declarations =============================================================================== */
 
+/**
+ * @brief Crea una nueva instancia de la estructura alumno_s.
+ *
+ * @return Puntero a la nueva instancia de alumno_s, o NULL si no hay espacio disponible.
+ */
+#ifdef USAR_MEMORIA_ESTATICA
+static alumnoT CrearInstancia(void);
+#endif
 /**
  * @brief Serializa un campo de texto clave-valor en formato JSON.
  *
@@ -57,11 +76,30 @@ static int SerializarTexto(char campo[], const char valor[], char buffer[], uint
 static int SerializarNumero(char campo[], int valor, char buffer[], uint32_t size);
 
 /* === Private variable definitions ================================================================================ */
-
+#ifdef USAR_MEMORIA_ESTATICA
+    static struct alumno_s instancias[ALUMNOS_MAX_INSTANCIAS]={0};
+#endif
 /* === Public variable definitions ================================================================================= */
 
 /* === Private function definitions ================================================================================ */
-
+#ifdef USAR_MEMORIA_ESTATICA
+static alumno_t CrearInstancia(){
+    alumno_t self = NULL;
+    for (int i = 0; i < ALUMNOS_MAX_INSTANCIAS; i++)
+    {
+        if (!instancias[i].ocupado)
+        {
+            instancias[i].ocupado = true;
+            self = &instancias[i];
+            break;
+        }
+        
+    }
+    
+   return self;
+    
+}
+#endif
 static int SerializarTexto(char campo[], const char valor[], char buffer[], uint32_t size) {
     return snprintf(buffer, size, "\"%s\":\"%s\",", campo, valor);
 }
@@ -71,8 +109,21 @@ static int SerializarNumero(char campo[], int valor, char buffer[], uint32_t siz
 }
 
 /* === Public function implementation ============================================================================== */
+alumno_t CrearAlumno(char* nombre, char* apellido, uint32_t dni) {
+    #ifndef USAR_MEMORIA_DINAMICA
+        alumno_t self = malloc(sizeof(struct alumno_s));
+    #else
+        alumno_t self = CrearInstancia();
+    #endif
+    if (self != NULL) {
+        self->documento = dni;
+        strncpy(self->nombre, nombre, sizeof(self->nombre) - 1);
+        strncpy(self->apellido, apellido, sizeof(self->apellido) - 1);
+    } 
+    return self;
+}
 
-int Serializar(const alumno_t* alumno, char buffer[], uint32_t size) {
+int SerializarAlumno(alumno_t self, char buffer[], int size) {
     int escritos;
     int resultado;
 
@@ -80,7 +131,7 @@ int Serializar(const alumno_t* alumno, char buffer[], uint32_t size) {
     buffer++;
     escritos = 1;
 
-    resultado = SerializarTexto("nombre", alumno->nombre, buffer, size - escritos);
+    resultado = SerializarTexto("nombre", self->nombre, buffer, size - escritos);
     if (resultado < 0) {
         return -1;
     }
@@ -88,7 +139,7 @@ int Serializar(const alumno_t* alumno, char buffer[], uint32_t size) {
     escritos = escritos + resultado;
     buffer = buffer + resultado;
     resultado = escritos;
-    escritos += SerializarTexto("apellido", alumno->apellido, buffer, size - escritos);
+    escritos += SerializarTexto("apellido", self->apellido, buffer, size - escritos);
     if (escritos < 0) {
         return -1;
     }
@@ -96,14 +147,14 @@ int Serializar(const alumno_t* alumno, char buffer[], uint32_t size) {
     buffer = buffer + (escritos - resultado);
     resultado = escritos;
 
-    escritos = escritos + SerializarNumero("documento", alumno->documento, buffer, size - escritos);
+    escritos = escritos + SerializarNumero("documento", self->documento, buffer, size - escritos);
     if (escritos < 0) {
         return -1;
     }
 
     buffer = buffer + (escritos - resultado);
 
-    if ((uint32_t)escritos >= (size - 1)) {
+    if (escritos >= (size - 1)) {
         return -1;
     } else {
         *buffer = '}';
