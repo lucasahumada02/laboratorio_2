@@ -33,24 +33,15 @@ extern "C" {
 #endif
 
 /* === Public macros definitions =================================================================================== */
-/**
- * @brief 
- * 
- */
+
 #define TIPO_DE_MEMORIA 1
-/**
- * @brief 
- * 
- */
+
 #if TIPO_DE_MEMORIA == 0
 #define USAR_MEMORIA_DINAMICA
 #else
 #define USAR_MEMORIA_ESTATICA
 #endif
-/**
- * @brief 
- * 
- */
+
 #ifdef USAR_MEMORIA_ESTATICA
         #define ALUMNOS_MAX_INSTANCIAS 2 //!<Cantidad maxima de alumnos
 #endif
