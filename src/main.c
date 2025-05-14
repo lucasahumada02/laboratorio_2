@@ -69,6 +69,14 @@ int main(void) {
     } else {
         printf("Error: espacio insuficiente para serializar\n");
     }
+
+    alumno_t esteban = CrearAlumno("lobito","esteban",45656589);
+     resultado = SerializarAlumno(esteban,buffer, sizeof(buffer));
+     if (resultado >= 0) {
+        printf("Serializado: %s\n", buffer);
+    } else {
+        printf("Error: espacio insuficiente para serializar\n");
+    }
     return 0;
 }
 

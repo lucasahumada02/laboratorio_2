@@ -39,3 +39,6 @@ clean:
 
 doc:
 	doxygen Doxyfile
+
+exe: all
+	@$(PROGRAM)

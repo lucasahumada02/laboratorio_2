@@ -40,7 +40,7 @@ struct alumno_s {
     char nombre[20];     //!< Nombre del alumno
     char apellido[20];   //!< Apellido del alumno
     uint32_t documento;  //!< Documento del alumno
-#ifndef USAR_MEMORIA_ESTATICA
+#ifdef USAR_MEMORIA_ESTATICA
     bool ocupado;       //!<Indica si la instancia esta ocupada
 #endif
 };
@@ -52,7 +52,7 @@ struct alumno_s {
  * @return Puntero a la nueva instancia de alumno_s, o NULL si no hay espacio disponible.
  */
 #ifdef USAR_MEMORIA_ESTATICA
-static alumnoT CrearInstancia(void);
+static alumno_t CrearInstancia(void);
 #endif
 /**
  * @brief Serializa un campo de texto clave-valor en formato JSON.
@@ -120,7 +120,9 @@ alumno_t CrearAlumno(char* nombre, char* apellido, uint32_t dni) {
         self->documento = dni;
         strncpy(self->nombre, nombre, sizeof(self->nombre) - 1);
         strncpy(self->apellido, apellido, sizeof(self->apellido) - 1);
-    } 
+    } else{
+        printf("Error alumno\n");
+    }
     return self;
 }
 
