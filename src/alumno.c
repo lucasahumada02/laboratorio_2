@@ -24,6 +24,7 @@ SPDX-License-Identifier: MIT
 /* === Headers files inclusions ==================================================================================== */
 
 #include "alumno.h"
+
 #include <stdio.h>
 #include <string.h>
 
@@ -35,23 +36,25 @@ SPDX-License-Identifier: MIT
 
 /**
  * @brief Serializa un campo de texto clave-valor en formato JSON.
- * 
- * @param clave Nombre del campo
+ *
+ * @param campo Nombre del campo
  * @param valor Contenido de texto
- * @param salida Buffer de salida
- * @return int Longitud del texto generado
+ * @param buffer Buffer de salida
+ * @param size  Tamaño disponible para escribir la cadena
+ * @return int Longitud del texto generado o -1 si el espacio no es suficiente
  */
-static int SerializarTexto(const char clave[], const char valor[], char salida[]);
+static int SerializarTexto(char campo[], const char valor[], char buffer[], uint32_t size);
 
 /**
  * @brief Serializa un campo numérico clave-valor en formato JSON.
- * 
- * @param clave Nombre del campo
+ *
+ * @param campo Nombre del campo
  * @param valor Valor numérico
- * @param salida Buffer de salida
- * @return int Longitud del texto generado
+ * @param buffer Buffer de salida
+ * @param size  Tamaño disponible para escribir la cadena
+ * @return int Longitud del texto generado o -1 si el espacio no es suficiente
  */
-static int SerializarNumero(const char clave[], uint32_t valor, char salida[]);
+static int SerializarNumero(char campo[], int valor, char buffer[], uint32_t size);
 
 /* === Private variable definitions ================================================================================ */
 
@@ -59,32 +62,58 @@ static int SerializarNumero(const char clave[], uint32_t valor, char salida[]);
 
 /* === Private function definitions ================================================================================ */
 
-static int SerializarTexto(const char clave[], const char valor[], char salida[]) {
-    return sprintf(salida, "\"%s\":\"%s\"", clave, valor);
+static int SerializarTexto(char campo[], const char valor[], char buffer[], uint32_t size) {
+    return snprintf(buffer, size, "\"%s\":\"%s\",", campo, valor);
 }
 
-static int SerializarNumero(const char clave[], uint32_t valor, char salida[]) {
-    return sprintf(salida, "\"%s\":%d", clave, valor);
+static int SerializarNumero(char campo[], int valor, char buffer[], uint32_t size) {
+    return snprintf(buffer, size, "\"%s\":%d", campo, valor);
 }
 
 /* === Public function implementation ============================================================================== */
 
-int Serializar(const alumno_t *a, char salida[], uint32_t size) {
-    char buffer[256];
-    uint32_t  total = 0;
+int Serializar(const alumno_t* alumno, char buffer[], uint32_t size) {
+    int escritos;
+    int resultado;
 
-    total += sprintf(buffer + total, "{");
-    total += SerializarTexto("nombre", a->nombre, buffer + total);
-    total += sprintf(buffer + total, ",");
-    total += SerializarTexto("apellido", a->apellido, buffer + total);
-    total += sprintf(buffer + total, ",");
-    total += SerializarNumero("documento", a->documento, buffer + total);
-    total += sprintf(buffer + total, "}");
+    buffer[0] = '{';
+    buffer++;
+    escritos = 1;
 
-    if (total >= size) return -1;
+    resultado = SerializarTexto("nombre", alumno->nombre, buffer, size - escritos);
+    if (resultado < 0) {
+        return -1;
+    }
 
-    strcpy(salida, buffer);
-    return total;
+    escritos = escritos + resultado;
+    buffer = buffer + resultado;
+    resultado = escritos;
+    escritos += SerializarTexto("apellido", alumno->apellido, buffer, size - escritos);
+    if (escritos < 0) {
+        return -1;
+    }
+
+    buffer = buffer + (escritos - resultado);
+    resultado = escritos;
+
+    escritos = escritos + SerializarNumero("documento", alumno->documento, buffer, size - escritos);
+    if (escritos < 0) {
+        return -1;
+    }
+
+    buffer = buffer + (escritos - resultado);
+
+    if ((uint32_t)escritos >= (size - 1)) {
+        return -1;
+    } else {
+        *buffer = '}';
+        buffer++;
+        *buffer = '\0';
+
+        escritos = escritos + 2;
+    }
+
+    return escritos;
 }
 
 /* === End of documentation ======================================================================================== */

@@ -37,14 +37,12 @@ extern "C" {
 
 /* === Public data type declarations =============================================================================== */
 
-/**
- * @brief Estructura que representa a un alumno.
- */
+//! Estructura que representa un alumno
 
- typedef struct alumno_s {
-    char nombre[20];    /**< Nombre del alumno*/
-    char apellido[20];  /**< Apellido del alumno*/
-    uint32_t documento; /**< Documento del alumno*/
+typedef struct alumno_s {
+    char nombre[20];     //!< Nombre del alumno
+    char apellido[20];   //!< Apellido del alumno
+    uint32_t documento;  //!< Documento del alumno
 } alumno_t;
 
 /* === Public variable declarations ================================================================================ */
@@ -52,15 +50,14 @@ extern "C" {
 /* === Public function declarations ================================================================================ */
 
 /**
- * @brief Serializa los datos de un alumno a formato JSON.
- * 
- * @param a Puntero constante al alumno
- * @param salida Buffer donde se escribe el JSON generado
- * @param size Tamaño máximo del buffer de salida
- * @return int Longitud de la cadena generada o -1 si no hay suficiente espacio
+ * @brief Funcion para serializar los datos de un alumno
+ *
+ * @param alumno Puntero a la estructura con los datos del alumno
+ * @param buffer cadena de caracteres donde se almacenaran los datos serializados
+ * @param size Espacio disponible en la cadena de caracteres
+ * @return int Cantidad de caracteres escritos en la cadena de resultado o -1 si hubo error
  */
-int Serializar(const alumno_t *a, char salida[], uint32_t size);
-
+int Serializar(const alumno_t* alumno, char buffer[], uint32_t size);
 
 /* === End of conditional blocks =================================================================================== */
 #ifdef __cplusplus

@@ -34,7 +34,11 @@ SPDX-License-Identifier: MIT
 /* === Private function declarations =============================================================================== */
 
 /* === Private variable definitions ================================================================================ */
-
+static const struct alumno_s YO = {
+    .nombre = "Lucas",
+    .apellido = "Ahumada",
+    .documento = 43770990
+};
 /* === Public variable definitions ================================================================================= */
 
 /* === Private function definitions ================================================================================ */
@@ -47,16 +51,14 @@ SPDX-License-Identifier: MIT
  * @return int Código de salida del sistema operativo
  */
 int main(void) {
-    alumno_t alumno = {
-        .nombre = "Lucas",
-        .apellido = "Ahumada",
-        .documento = 43770990};
 
-    char salida[256];
-    int resultado = Serializar(&alumno, salida, sizeof(salida));
+    char buffer[100];
+    int resultado;
+
+    resultado = Serializar(&YO,buffer, sizeof(buffer));
 
     if (resultado >= 0) {
-        printf("%s\n", salida);
+        printf("Serializado: %s\n", buffer);
     } else {
         printf("Error: espacio insuficiente para serializar\n");
     }
