@@ -41,12 +41,6 @@ extern "C" {
 
 typedef struct alumno_s * alumno_t;
 
-/*typedef struct alumno_s {
-    char nombre[20];     //!< Nombre del alumno
-    char apellido[20];   //!< Apellido del alumno
-    uint32_t documento;  //!< Documento del alumno
-} alumno_t;*/
-
 /* === Public variable declarations ================================================================================ */
 
 /* === Public function declarations ================================================================================ */
